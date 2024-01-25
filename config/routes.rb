@@ -11,6 +11,9 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :employees, only: [:index, :show, :create, :update, :destroy]
       get '/all_emp', to: 'employees#index' 
+      get '/emp/:id', to: 'employees#show'
+      get '/destroy_emp/:id', to: 'employees#destroy'
+
       
     end
   end

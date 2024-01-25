@@ -35,7 +35,14 @@ class Api::V1::EmployeesController < ApplicationController
   def destroy
     name = "EMPNO"
     value = params[:id].to_i
-    key = {name => value}
+    @employee = Crudop::Dynamo.dy_query_item("Employee", name,value)
+    if @employee.is_a?(Array) && !@employee.empty? && @employee.first.is_a?(Hash)
+      firstname = @employee.first['FirstName'] || "Not Available"
+    else
+      firstname = "Not Available"
+    end
+
+    key = {name => value, "FirstName" => firstname}
     begin
       Crudop::Dynamo.dy_delete_item("Employee", key)
       render json: { status: 'SUCCESS', message: 'Deleted employee', id: value }, status: :ok
@@ -45,8 +52,6 @@ class Api::V1::EmployeesController < ApplicationController
   end
   
 
-  
-    
   
   private
   def em_params
