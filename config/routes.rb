@@ -13,6 +13,9 @@ Rails.application.routes.draw do
       get '/all_emp', to: 'employees#index' 
       get '/emp/:id', to: 'employees#show'
       get '/destroy_emp/:id', to: 'employees#destroy'
+      patch '/update_emp/:id', to: 'employees#update'
+
+
 
       
     end

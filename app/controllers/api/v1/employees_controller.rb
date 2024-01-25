@@ -14,7 +14,7 @@ class Api::V1::EmployeesController < ApplicationController
       @employee = Crudop::Dynamo.dy_query_item("Employee", key,value)
       render json: {status: 'SUCCESS', message: 'Saved employee', data: @employee}, status: :ok
     rescue Exception => e
-      render json: {status: 'ERROR', message: 'Employee not saved', data: dynamo_item}, status: :unprocessable_entity
+      render json: {status: 'ERROR', message: 'Employee not saved', data: @employee}, status: :unprocessable_entity
     end 
   end
   
@@ -33,23 +33,49 @@ class Api::V1::EmployeesController < ApplicationController
 
   #DELETE /employees/:id
   def destroy
-    name = "EMPNO"
-    value = params[:id].to_i
-    @employee = Crudop::Dynamo.dy_query_item("Employee", name,value)
-    if @employee.is_a?(Array) && !@employee.empty? && @employee.first.is_a?(Hash)
-      firstname = @employee.first['FirstName'] || "Not Available"
-    else
-      firstname = "Not Available"
-    end
-
-    key = {name => value, "FirstName" => firstname}
+    key = helper_getter
     begin
       Crudop::Dynamo.dy_delete_item("Employee", key)
-      render json: { status: 'SUCCESS', message: 'Deleted employee', id: value }, status: :ok
+      render json: { status: 'SUCCESS', message: 'Deleted employee'}, status: :ok
     rescue StandardError => e
       render json: { status: 'ERROR', message: 'Employee not deleted', error: e.message }, status: :unprocessable_entity
     end
   end
+
+  def update
+    key = helper_getter
+    updates = {"LastName" => "Farhan"}
+    begin
+      @employee = Crudop::Dynamo.dy_update_item("Employee", key, updates)
+      render json: { status: 'SUCCESS', message: 'Updated employee', data: @employee }, status: :ok
+    rescue StandardError => e
+      render json: { status: 'ERROR', message: 'Employee not updated', error: e.message }, status: :unprocessable_entity
+    end
+  end
+
+
+  def helper_getter
+    partition_key = "EMPNO"
+    sort_key = "FirstName"
+    value = params[:id].to_i
+  
+    begin
+      @employee = Crudop::Dynamo.dy_query_item("Employee", partition_key, value)
+  
+      if @employee.is_a?(Array) && !@employee.empty? && @employee.first.is_a?(Hash)
+        firstname = @employee.first['FirstName'] || "Not Available"
+      else
+        firstname = "Not Available"
+      end
+  
+      { partition_key => value, sort_key => firstname }
+      rescue StandardError=> e
+        # Handle exception (log it, return an error message, etc.)
+        puts e.message
+      end
+    end
+
+  
   
 
   
