@@ -12,10 +12,9 @@ Rails.application.routes.draw do
       resources :employees, only: [:index, :show, :create, :update, :destroy]
       get '/all_emp', to: 'employees#index' 
       get '/emp/:id', to: 'employees#show'
-      get '/destroy_emp/:id', to: 'employees#destroy'
+      delete '/destroy_emp/:id', to: 'employees#destroy'
+      post '/create_emp', to: 'employees#create'
       patch '/update_emp/:id', to: 'employees#update'
-
-
 
       
     end

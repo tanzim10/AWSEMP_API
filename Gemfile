@@ -51,4 +51,8 @@ gem "rack-cors"
 
 gem "dotenv-rails", groups: [:development, :test]
 
+gem 'aws-sdk-dynamodb'
+
+gem 'bcrypt'
+
 

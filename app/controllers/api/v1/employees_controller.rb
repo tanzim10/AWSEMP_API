@@ -21,7 +21,9 @@ class Api::V1::EmployeesController < ApplicationController
   #POST /employees
   def create
     #Formatting the json data acording to dynamodb format
+
     dynamo_item = format_dynamo_params(em_params)
+   
     begin
       @employee = Crudop::Dynamo.dy_put_item("Employee", dynamo_item)
       render json: {status: 'SUCCESS', message: 'Saved employee', data: dynamo_item}, status: :ok
@@ -41,10 +43,10 @@ class Api::V1::EmployeesController < ApplicationController
       render json: { status: 'ERROR', message: 'Employee not deleted', error: e.message }, status: :unprocessable_entity
     end
   end
-
+  #Patch /employees/:id
   def update
     key = helper_getter
-    updates = {"LastName" => "Farhan"}
+    updates = em_params
     begin
       @employee = Crudop::Dynamo.dy_update_item("Employee", key, updates)
       render json: { status: 'SUCCESS', message: 'Updated employee', data: @employee }, status: :ok
@@ -76,13 +78,12 @@ class Api::V1::EmployeesController < ApplicationController
     end
 
   
-  
-
-  
   private
   def em_params
-    params.require(:employee).permit(:EMPNO, :FirstName, :LastName, :DOB, :HiredDate, :Salary, :Bonus, :WorkDept, :PhoneNo, :Job, :EDLevel, :Sex)
+    # params.require(:employee).permit(:FirstName)
+    params.require(:employee).permit(:EMPNO, :FirstName, :LastName, :DOB, :HiredDate, :Salary, :Bonus, :WorkDept, :PhoneNo, :Job, :EDLevel, :Sex, :Email)
   end
+  
   
   def format_dynamo_params(employee_params)
     dynamo_formatted = {}
