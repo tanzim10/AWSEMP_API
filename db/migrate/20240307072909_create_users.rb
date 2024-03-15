@@ -5,9 +5,12 @@ class CreateUsers < ActiveRecord::Migration[7.1]
       t.string :last_name
       t.string :email
       t.string :password_digest
-      t.integer: phone
+      t.string :phone
 
       t.timestamps
     end
   end
 end
+
+docker-compose run --rm web rails generate migration ChangeColumnToBeStringInUser phone:string
+
