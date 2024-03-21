@@ -44,6 +44,11 @@ group :development do
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   # gem "spring"
 end
+group :development, :test do
+  gem 'rspec-rails'
+  gem'rails-controller-testing'
+  gem 'json_matchers'
+end
 
 gem "crudop" , git: "https://github.com/tanzim10/CRUDOP_GEM.git"
 

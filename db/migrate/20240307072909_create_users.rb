@@ -12,5 +12,5 @@ class CreateUsers < ActiveRecord::Migration[7.1]
   end
 end
 
-docker-compose run --rm web rails generate migration ChangeColumnToBeStringInUser phone:string
+# docker-compose run --rm web rails generate migration ChangeColumnToBeStringInUser phone:string
 
